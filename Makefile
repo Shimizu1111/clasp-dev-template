@@ -124,7 +124,7 @@ diff:
 	@cd diff_versions/v$(VERSION_NUM_FROM) && clasp pull --versionNumber $(VERSION_NUM_FROM) > /dev/null
 	@cd diff_versions/v$(VERSION_NUM_TO) && clasp pull --versionNumber $(VERSION_NUM_TO) > /dev/null
 	@echo "🔍 v$(VERSION_NUM_FROM) と v$(VERSION_NUM_TO) の差分を表示します"
-	@diff -r diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO) > .diff_output.tmp 2>&1 || true
+	@diff -ru diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO) > .diff_output.tmp 2>&1 || true
 	@if [ -s .diff_output.tmp ]; then \
 		cat .diff_output.tmp; \
 	else \
