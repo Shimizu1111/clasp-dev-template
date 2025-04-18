@@ -17,13 +17,29 @@ endif
 include $(ENV_FILE)
 export
 
+# 環境変数ファイル
+ENV_FILE := .env.$(GAS_ENV)
+
+# 存在確認
+ifneq ($(wildcard $(ENV_FILE)), $(ENV_FILE))
+$(error ❌ $(ENV_FILE) が存在しません。)
+endif
+
+# 読み込み
+include $(ENV_FILE)
+export
+
+# .env内のキー一覧を取得
+ENV_VARS := $(shell awk -F= '/^[A-Z_][A-Z0-9_]*=.*/ { print $$1 }' $(ENV_FILE))
+
+# # 各変数が未定義 or 空なら error を発行するように個別に評価
+$(foreach var,$(ENV_VARS),\
+  $(eval $(if $(value $(var)),,$(error ❌ $(var) が未定義または空です。全ての環境変数を埋めてください))))
+
 
 .PHONY: init build deploy clean
 
 init:
-	@echo $(ENV_FILE)
-	@echo $(SCRIPT_ID)
-	@echo $(SCRIPT_ID)
 	@echo "🧹 build ディレクトリを初期化します"
 	@rm -rf build && mkdir -p build
 	@rm -f .clasp.json build/appsscript.json
