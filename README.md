@@ -1,18 +1,16 @@
 # Google Apps Script 開発テンプレート
 
 このプロジェクトは、Google Apps Script (GAS) の開発環境テンプレートです。<br>
-環境変数の管理や、ステージング・本番環境の分離など、実践的なGAS開発のための基盤を提供します。
-
-## 前提条件
-
-- Node.js
-- [clasp](https://github.com/google/clasp) (Google Apps Script CLI)
-- Google アカウント
+以下のことができる実践的なGAS開発のための基盤を提供します。
+- 環境変数の管理ステージング
+- 本番環境の分離
+- gasのバージョン管理
 
 ## 環境構成
 
 このテンプレートは以下の環境をサポートしています：
 
+- `dev`: 開発環境
 - `stg`: ステージング環境
 - `prd`: 本番環境
 
@@ -20,10 +18,12 @@
 
 1. 環境変数ファイルの準備
 ```bash
+# 開発環境
+cp .env.prd\|stg\|dev.sample .env.dev
 # ステージング環境用
-cp .env.prd\|stg.sample .env.stg
+cp .env.prd\|stg\|dev.sample .env.stg
 # 本番環境用
-cp .env.prd\|stg.sample .env.prd
+cp .env.prd\|stg\|dev.sample .env.prd
 ```
 
 2. 環境変数の設定
@@ -48,11 +48,17 @@ clasp login
 2. デプロイ
 ```bash
 # ステージング環境へのデプロイ
-make deploy GAS_ENV=stg
+make deploy GAS_ENV=stg version "バージョン名"
 
 # 本番環境へのデプロイ
-make deploy GAS_ENV=prd
+make deploy GAS_ENV=prd version "バージョン名"
 ```
+
+3. 過去のリリースバージョンの確認方法
+```bash
+clasp versions
+```
+→GUIでは表示されないのでコマンドで確認する必要がある
 
 ## 主要なコマンド
 

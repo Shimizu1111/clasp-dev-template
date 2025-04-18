@@ -64,10 +64,17 @@ build:
 	@echo "✅ ビルド完了"
 
 deploy: init build
+	@if [ -z "$(VERSION)" ]; then \
+		echo "❌ VERSION が未指定です。例: make deploy GAS_ENV=stg VERSION='stg用リリース'" >&2; \
+		exit 1; \
+	fi
 	@echo "🚀 デプロイ先環境: $(GAS_ENV)"
 	@read -p "$(GAS_ENV) 環境にデプロイしてもよろしいですか？ (y/n): " ans; \
 	if [ "$$ans" = "y" ]; then \
-		clasp push; \
+		echo "📤 clasp push 実行中..." && \
+		clasp push && \
+		echo "📌 バージョン作成: $(VERSION)" && clasp version "$(VERSION)" && \
+		clasp deploy; \
 	else \
 		echo "⚠️ デプロイをキャンセルしました。"; \
 	fi
