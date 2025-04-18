@@ -28,7 +28,7 @@ init:
 	@rm -rf tmp
 	@echo "✅ .clasp.json と appsscript.json を $(GAS_ENV) 環境用にコピーしました"
 
-deploy: 
+deploy: init
 	@echo "🚀 デプロイ先環境: $(GAS_ENV)"
 	@read -p "$(GAS_ENV) 環境にデプロイしてもよろしいですか？ (y/n): " ans; \
 	if [ "$$ans" = "y" ]; then \
