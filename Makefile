@@ -64,8 +64,8 @@ build:
 	@echo "✅ ビルド完了"
 
 deploy: init build
-	@if [ -z "$(VERSION)" ]; then \
-		echo "❌ VERSION が未指定です。例: make deploy GAS_ENV=stg VERSION='stg用リリース'" >&2; \
+	@if [ -z "$(VERSION_DESC)" ]; then \
+		echo "❌ VERSION_DESC が未指定です。例: make deploy GAS_ENV=stg VERSION_DESC='stg用リリース'" >&2; \
 		exit 1; \
 	fi
 	@echo "🚀 デプロイ先環境: $(GAS_ENV)"
@@ -73,11 +73,38 @@ deploy: init build
 	if [ "$$ans" = "y" ]; then \
 		echo "📤 clasp push 実行中..." && \
 		clasp push && \
-		echo "📌 バージョン作成: $(VERSION)" && clasp version "$(VERSION)" && \
+		echo "📌 バージョン作成: $(VERSION_DESC)" && clasp version "$(VERSION_DESC)" && \
 		clasp deploy; \
 	else \
 		echo "⚠️ デプロイをキャンセルしました。"; \
 	fi
+
+diff:
+	@if [ -z "$(VERSION_NUM_FROM)" ] || [ -z "$(VERSION_NUM_TO)" ]; then \
+		echo "❌ VERSION_NUM_FROM または VERSION_NUM_TO が未指定です。" >&2; \
+		echo "   例: make diff VERSION_NUM_FROM=2 VERSION_NUM_TO=3" >&2; \
+		exit 1; \
+	fi
+	@rm -rf .clasp.json build/appsscript.json
+	@echo "📥 バージョン $(VERSION_NUM_FROM) と $(VERSION_NUM_TO) を取得します..."
+	@rm -rf diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO)
+	@mkdir -p diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO)
+
+	@cd diff_versions/v$(VERSION_NUM_FROM) && clasp clone $(SCRIPT_ID) > /dev/null && clasp pull > /dev/null
+	@cd diff_versions/v$(VERSION_NUM_TO) && clasp clone $(SCRIPT_ID) > /dev/null && clasp pull > /dev/null
+
+	@echo "🔍 v$(VERSION_NUM_FROM) と v$(VERSION_NUM_TO) の差分を表示します"
+	
+	@diff -r diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO) > .diff_output.tmp || true
+	@if [ -s .diff_output.tmp ]; then \
+		cat .diff_output.tmp; \
+	else \
+		echo "✅ v$(VERSION_NUM_FROM) と v$(VERSION_NUM_TO) に差分はありません"; \
+	fi
+	@rm -f .diff_output.tmp
+
+version-list:
+	@clasp versions
 
 clean:
 	@rm -rf build .clasp.json
