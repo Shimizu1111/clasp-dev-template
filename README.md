@@ -47,17 +47,20 @@ clasp login
 
 2. デプロイ
 ```bash
-# ステージング環境へのデプロイ
-make deploy GAS_ENV=stg version "バージョン名"
+# バージョン名の詳細をつけてデプロイ
+make deploy GAS_ENV=stg VERSION_DESC='リリース内容の詳細説明'
 
-# 本番環境へのデプロイ
-make deploy GAS_ENV=prd version "バージョン名"
+# バージョン名の詳細なしでデプロイ
+make deploy-no-version GAS_ENV=stg
 ```
 
-3. 過去のリリースバージョンの確認方法
+3. 対象のリリースバージョンとの差分を確認
 ```bash
-clasp versions
+make version-list GAS_ENV=stg
+# version-listで確認したバージョンを比較
+make diff GAS_ENV=stg VERSION_NUM_FROM=1 VERSION_NUM_TO=3
 ```
+
 →GUIでは表示されないのでコマンドで確認する必要がある
 
 ## 主要なコマンド

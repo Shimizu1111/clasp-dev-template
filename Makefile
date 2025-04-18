@@ -79,6 +79,18 @@ deploy: init build
 		echo "⚠️ デプロイをキャンセルしました。"; \
 	fi
 
+deploy-no-version: init build
+	@echo "🚀 バージョンなしデプロイ: $(GAS_ENV)"
+	@read -p "$(GAS_ENV) 環境にデプロイ（バージョンなし）してもよろしいですか？ (y/n): " ans; \
+	if [ "$$ans" = "y" ]; then \
+		echo "📤 clasp push 実行中..." && \
+		clasp push && \
+		echo "🚀 デプロイ中..." && \
+		clasp deploy; \
+	else \
+		echo "⚠️ デプロイをキャンセルしました。"; \
+	fi
+
 diff:
 	@if [ -z "$(VERSION_NUM_FROM)" ] || [ -z "$(VERSION_NUM_TO)" ]; then \
 		echo "❌ VERSION_NUM_FROM または VERSION_NUM_TO が未指定です。" >&2; \
