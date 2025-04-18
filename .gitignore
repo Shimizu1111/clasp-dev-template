@@ -1,4 +1,7 @@
 .env
+.env.prd
+.env.stg
 .clasp.json
 appsscript.json
-.tmp
+tmp
+build
