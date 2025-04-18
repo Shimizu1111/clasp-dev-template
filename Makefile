@@ -117,9 +117,12 @@ diff:
 		exit 1; \
 	fi
 	@echo "📥 バージョン $(VERSION_NUM_FROM) と $(VERSION_NUM_TO) を取得します..."
+	@rm -rf diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO)
 	@mkdir -p diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO)
-	@cd diff_versions/v$(VERSION_NUM_FROM) && clasp pull --versionNumber $(VERSION_NUM_FROM)
-	@cd diff_versions/v$(VERSION_NUM_TO) && clasp pull --versionNumber $(VERSION_NUM_TO)
+	@echo '{"scriptId":"$(SCRIPT_ID)", "rootDir": "."}' > diff_versions/v$(VERSION_NUM_FROM)/.clasp.json
+	@echo '{"scriptId":"$(SCRIPT_ID)", "rootDir": "."}' > diff_versions/v$(VERSION_NUM_TO)/.clasp.json
+	@cd diff_versions/v$(VERSION_NUM_FROM) && clasp pull --versionNumber $(VERSION_NUM_FROM) > /dev/null
+	@cd diff_versions/v$(VERSION_NUM_TO) && clasp pull --versionNumber $(VERSION_NUM_TO) > /dev/null
 	@echo "🔍 v$(VERSION_NUM_FROM) と v$(VERSION_NUM_TO) の差分を表示します"
 	@diff -r diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO) > .diff_output.tmp 2>&1 || true
 	@if [ -s .diff_output.tmp ]; then \
