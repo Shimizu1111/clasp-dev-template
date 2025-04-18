@@ -97,23 +97,19 @@ diff:
 		echo "   例: make diff VERSION_NUM_FROM=2 VERSION_NUM_TO=3" >&2; \
 		exit 1; \
 	fi
-	@rm -rf .clasp.json build/appsscript.json
 	@echo "📥 バージョン $(VERSION_NUM_FROM) と $(VERSION_NUM_TO) を取得します..."
-	@rm -rf diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO)
 	@mkdir -p diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO)
-
-	@cd diff_versions/v$(VERSION_NUM_FROM) && clasp clone $(SCRIPT_ID) > /dev/null && clasp pull > /dev/null
-	@cd diff_versions/v$(VERSION_NUM_TO) && clasp clone $(SCRIPT_ID) > /dev/null && clasp pull > /dev/null
-
+	@cd diff_versions/v$(VERSION_NUM_FROM) && clasp pull --versionNumber $(VERSION_NUM_FROM)
+	@cd diff_versions/v$(VERSION_NUM_TO) && clasp pull --versionNumber $(VERSION_NUM_TO)
 	@echo "🔍 v$(VERSION_NUM_FROM) と v$(VERSION_NUM_TO) の差分を表示します"
-	
-	@diff -r diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO) > .diff_output.tmp || true
+	@diff -r diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO) > .diff_output.tmp 2>&1 || true
 	@if [ -s .diff_output.tmp ]; then \
 		cat .diff_output.tmp; \
 	else \
-		echo "✅ v$(VERSION_NUM_FROM) と v$(VERSION_NUM_TO) に差分はありません"; \
+		echo "✅ 差分はありません"; \
 	fi
 	@rm -f .diff_output.tmp
+
 
 version-list:
 	@clasp versions
