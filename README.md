@@ -76,6 +76,8 @@ make diff GAS_ENV=stg VERSION_NUM_FROM=1 VERSION_NUM_TO=3
   バージョンを作成せず、clasp push → deploy だけを実行します（テスト用途に便利）
 - `make diff VERSION_NUM_FROM=3 VERSION_NUM_TO=5`:  
   指定した2つのバージョン間のソースコードの差分を比較します（内部的に clasp pull）
+- `make color-diff VERSION_NUM_FROM=3 VERSION_NUM_TO=5`:  
+  make diffに色が付くので見やすくなりますが、colordiffが必要です
 - `make version-list GAS_ENV=[stg|prd]`:  
   `clasp versions` を実行し、現在のプロジェクトに登録されたバージョン履歴を一覧表示します
 - `make clean`:  

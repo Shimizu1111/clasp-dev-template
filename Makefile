@@ -132,6 +132,27 @@ diff:
 	fi
 	@rm -f .diff_output.tmp
 
+color-diff:
+	@if [ -z "$(VERSION_NUM_FROM)" ] || [ -z "$(VERSION_NUM_TO)" ]; then \
+		echo "❌ VERSION_NUM_FROM または VERSION_NUM_TO が未指定です。" >&2; \
+		echo "   例: make diff VERSION_NUM_FROM=2 VERSION_NUM_TO=3" >&2; \
+		exit 1; \
+	fi
+	@echo "📥 バージョン $(VERSION_NUM_FROM) と $(VERSION_NUM_TO) を取得します..."
+	@rm -rf diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO)
+	@mkdir -p diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO)
+	@echo '{"scriptId":"$(SCRIPT_ID)", "rootDir": "."}' > diff_versions/v$(VERSION_NUM_FROM)/.clasp.json
+	@echo '{"scriptId":"$(SCRIPT_ID)", "rootDir": "."}' > diff_versions/v$(VERSION_NUM_TO)/.clasp.json
+	@cd diff_versions/v$(VERSION_NUM_FROM) && clasp pull --versionNumber $(VERSION_NUM_FROM) > /dev/null
+	@cd diff_versions/v$(VERSION_NUM_TO) && clasp pull --versionNumber $(VERSION_NUM_TO) > /dev/null
+	@echo "🔍 v$(VERSION_NUM_FROM) と v$(VERSION_NUM_TO) の差分を表示します"
+	@diff -ru diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO) > .diff_output.tmp 2>&1 || true
+	@if [ -s .diff_output.tmp ]; then \
+		@rm -f .diff_output.tmp
+		@diff -Nru diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO) || true; \
+	else \
+		echo "✅ 差分はありません"; \
+	fi
 
 version-list:
 	@clasp versions
