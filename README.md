@@ -65,12 +65,23 @@ make diff GAS_ENV=stg VERSION_NUM_FROM=1 VERSION_NUM_TO=3
 
 ## 主要なコマンド
 
-- `clasp login`: Google Apps Scriptにログインします
-- `make deploy GAS_ENV=[stg|prd]`: 指定した環境にプロジェクトをデプロイします
-  - `init`: デプロイ環境用の設定ファイル（`.clasp.json`、`appsscript.json`）を準備
-  - `build`: ソースコードをビルドし、環境変数のプレースホルダを置換
-  - デプロイ前に確認プロンプトが表示されます
-- `make clean`: ビルドファイルとclasp設定をクリーンアップします
+- `clasp login`: Google Apps Script にログインします
+- `make deploy GAS_ENV=[stg|prd] VERSION_DESC='説明文'`:  
+  指定した環境に、説明付きバージョンを作成してデプロイします  
+  - `init`: デプロイ環境用の設定ファイル（`.clasp.json`、`appsscript.json`）を準備  
+  - `build`: ソースコードをビルドし、環境変数のプレースホルダを置換  
+  - `deploy`: clasp push → version → deploy を実行  
+  - 実行前に確認プロンプトが表示されます
+- `make deploy-no-version GAS_ENV=[stg|prd]`:  
+  バージョンを作成せず、clasp push → deploy だけを実行します（テスト用途に便利）
+- `make diff VERSION_NUM_FROM=3 VERSION_NUM_TO=5`:  
+  指定した2つのバージョン間のソースコードの差分を比較します（内部的に clasp pull）
+- `make version-list GAS_ENV=[stg|prd]`:  
+  `clasp versions` を実行し、現在のプロジェクトに登録されたバージョン履歴を一覧表示します
+- `make clean`:  
+  `build/` ディレクトリと `.clasp.json` を削除してクリーンアップします
+- `make help`:  
+  各 `make` コマンドの説明を表示します
 
 ## プロジェクト構造
 

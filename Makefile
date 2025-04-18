@@ -1,4 +1,7 @@
 # ========== 設定 ==========
+# 全てのチェックをスキップするかどうか
+ifeq ($(filter help clean version-list,$(MAKECMDGOALS)),)
+
 ifndef GAS_ENV
 $(error ❌ GAS_ENV が未指定です。例: make deploy GAS_ENV=stg)
 endif
@@ -35,9 +38,25 @@ ENV_VARS := $(shell awk -F= '/^[A-Z_][A-Z0-9_]*=.*/ { print $$1 }' $(ENV_FILE))
 # # 各変数が未定義 or 空なら error を発行するように個別に評価
 $(foreach var,$(ENV_VARS),\
   $(eval $(if $(value $(var)),,$(error ❌ $(var) が未定義または空です。全ての環境変数を埋めてください))))
+endif
 
+.PHONY: help init build deploy deploy-no-version diff version-list clean
 
-.PHONY: init build deploy clean
+help:
+	@echo ""
+	@echo "🛠️  利用可能な make コマンド一覧:"
+	@echo ""
+	@echo "  make init GAS_ENV=xxx                     - build ディレクトリと clasp 設定を初期化"
+	@echo "  make build GAS_ENV=xxx                    - src を build にコピーし、env を埋め込み"
+	@echo "  make deploy GAS_ENV=xxx VERSION_DESC='...' - バージョン付きで clasp push & deploy"
+	@echo "  make deploy-no-version GAS_ENV=xxx        - バージョンを付けずに clasp push & deploy"
+	@echo "  make diff VERSION_NUM_FROM=x VERSION_NUM_TO=y - 2バージョンの差分を比較"
+	@echo "  make version-list                          - clasp に登録されたバージョン一覧を表示"
+	@echo "  make clean                                  - build ディレクトリと .clasp.json を削除"
+	@echo "  make help                                   - このヘルプを表示"
+	@echo ""
+	@echo "例: make deploy GAS_ENV=stg VERSION_DESC='stg用リリース'"
+	@echo ""
 
 init:
 	@echo "🧹 build ディレクトリを初期化します"
@@ -115,5 +134,5 @@ version-list:
 	@clasp versions
 
 clean:
-	@rm -rf build .clasp.json
+	@rm -rf build .clasp.json diff_versions
 	@echo "🧹 クリーン完了"
