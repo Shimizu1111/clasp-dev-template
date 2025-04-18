@@ -20,15 +20,15 @@ init:
 	@echo "🧹 tmp ディレクトリを初期化します"
 	@rm -rf tmp && mkdir -p tmp
 	@echo "🧹 .clasp.json と appsscript.json を初期化します"
-	@rm -f .clasp.json appsscript.json
+	@rm -f .clasp.json src/appsscript.json
 	@echo "🛠️ $(GAS_ENV) 環境の clasp 設定ファイルを取得します"
 	@cd tmp && clasp clone $(SCRIPT_ID)
 	@cp tmp/.clasp.json .clasp.json
-	@cp tmp/appsscript.json appsscript.json
+	@cp tmp/appsscript.json src/appsscript.json
 	@rm -rf tmp
 	@echo "✅ .clasp.json と appsscript.json を $(GAS_ENV) 環境用にコピーしました"
 
-deploy: init
+deploy: 
 	@echo "🚀 デプロイ先環境: $(GAS_ENV)"
 	@read -p "$(GAS_ENV) 環境にデプロイしてもよろしいですか？ (y/n): " ans; \
 	if [ "$$ans" = "y" ]; then \
