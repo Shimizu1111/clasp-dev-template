@@ -148,8 +148,8 @@ color-diff:
 	@echo "🔍 v$(VERSION_NUM_FROM) と v$(VERSION_NUM_TO) の差分を表示します"
 	@diff -ru diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO) > .diff_output.tmp 2>&1 || true
 	@if [ -s .diff_output.tmp ]; then \
-		@rm -f .diff_output.tmp
-		@diff -Nru diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO) || true; \
+		rm -rf .diff_output.tmp; \
+		colordiff -ru diff_versions/v$(VERSION_NUM_FROM) diff_versions/v$(VERSION_NUM_TO); \
 	else \
 		echo "✅ 差分はありません"; \
 	fi
